@@ -35,7 +35,7 @@ pip install weft
 Or from source:
 
 ```bash
-git clone https://github.com/yourusername/weft.git
+git clone https://github.com/Avi-141/weft.git
 cd weft
 pip install -e .
 ```
