@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "Weft Contributors"}
+    {name = "Avi Solanki"}
 ]
 keywords = ["knowledge-graph", "browsing", "chrome-extension", "browser", "tabs", "llm", "clustering", "tui", "semantic-search", "local-first", "second-brain", "navigation-tracking"]
 classifiers = [
