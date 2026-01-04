@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weft</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Cytoscape.js bundled locally -->
+  <script src="../lib/cytoscape.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="logo">Weft</h1>
+      <div class="header-actions">
+        <button id="btn-refresh" class="btn btn-icon" title="Rebuild Graph">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+        <button id="btn-import" class="btn btn-icon" title="Import Graph">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+        <button id="btn-export" class="btn btn-icon" title="Export Graph">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search -->
+    <div class="search-container">
+      <input
+        type="text"
+        id="search-input"
+        class="search-input"
+        placeholder="Search: fuzzy text, #keyword, @domain"
+      >
+      <div class="search-hint">
+        <span class="hint-item">fuzzy text</span>
+        <span class="hint-item">#keyword</span>
+        <span class="hint-item">@domain</span>
+      </div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button id="view-groups" class="toggle-btn active">Groups</button>
+      <button id="view-graph" class="toggle-btn">Graph</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Groups View -->
+      <div id="groups-view" class="view active">
+        <div class="groups-list" id="groups-list">
+          <!-- Groups will be populated here -->
+        </div>
+      </div>
+
+      <!-- Graph View -->
+      <div id="graph-view" class="view">
+        <div id="cy" class="graph-container"></div>
+        <div class="graph-controls">
+          <button id="btn-zoom-in" class="btn btn-icon btn-small" title="Zoom In">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <line x1="11" y1="8" x2="11" y2="14"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </button>
+          <button id="btn-zoom-out" class="btn btn-icon btn-small" title="Zoom Out">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </button>
+          <button id="btn-fit" class="btn btn-icon btn-small" title="Fit to View">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+          </button>
+        </div>
+        <div class="graph-legend">
+          <span class="legend-item"><span class="legend-dot similarity"></span> Similarity</span>
+          <span class="legend-item"><span class="legend-dot navigation"></span> Navigation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Panel -->
+    <div id="details-panel" class="details-panel hidden">
+      <div class="details-header">
+        <h3 id="details-title">Selected Item</h3>
+        <button id="details-close" class="btn btn-icon btn-small">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="details-content">
+        <div class="detail-row">
+          <label>URL</label>
+          <a id="details-url" href="#" target="_blank" class="detail-url"></a>
+        </div>
+        <div class="detail-row">
+          <label>Domain</label>
+          <span id="details-domain" class="detail-domain"></span>
+        </div>
+        <div class="detail-row">
+          <label>Keywords</label>
+          <div id="details-keywords" class="keywords-list"></div>
+        </div>
+        <div class="detail-row">
+          <label>Group</label>
+          <span id="details-group" class="detail-group"></span>
+        </div>
+      </div>
+      <div class="details-actions">
+        <button id="btn-open-tab" class="btn btn-primary">Open Tab</button>
+      </div>
+    </div>
+
+    <!-- Stats Footer -->
+    <footer class="footer">
+      <span id="stats-tabs">0 tabs</span>
+      <span id="stats-groups">0 groups</span>
+      <span id="stats-edges">0 edges</span>
+    </footer>
+  </div>
+
+  <!-- Hidden file input for import -->
+  <input type="file" id="file-input" accept=".json" style="display: none;">
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

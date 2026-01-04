@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Weft",
+  "version": "0.1.0",
+  "description": "Local-first knowledge graph for your browsing. Track tabs, discover connections, explore your web.",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage",
+    "sidePanel",
+    "webNavigation",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  },
+  "action": {
+    "default_title": "Open Weft"
+  }
+}
